@@ -3,15 +3,18 @@ const client = new Discord.Client();
 
 var fs = require('fs');
 var words = fs.readFileSync('words.txt').toString().split("\n");
-var channelId = '680494155172020271';
+
+
 var numberOfPlayer = 0;
 var players = [];
 
+var channelId = '680494155172020271';
 client.login("NjczNDkyMzc3MTU1MTQxNjYx.XjcgFw.dPT_oi9J7PqtfBt11TIz9Z0jcfA");
 
 client.on("ready", ()=>{
   console.log('suce');
 })
+
 client.on("message", function (msg) {
   console.log(players)
   if (msg.content.match("Start[3-8]")) {
@@ -38,7 +41,7 @@ function startGame(){
     traitor = getRandomInt(players.length);
     master = getRandomInt(players.length);
   } while (master === traitor);
-  client.channels.get(channelId).send("Le MJ sera : "+players[master].username+" , ordre ->")
+  client.channels.get(channelId).send("Le MJ est : "+players[master].username+" , ordre des questions->")
   for (var i = 0; i < players.length; i++) {
     if (i === traitor) {
       players[i].send("Traitor : " + words[mot]);
@@ -46,7 +49,7 @@ function startGame(){
     } else if (i === master) {
       players[i].send("Maitre : " + words[mot]);
     } else {
-      players[i].send("Citoyen -> victime");
+      players[i].send("Citoyen");
       client.channels.get(channelId).send(players[i].username)
     }
   }
@@ -61,7 +64,7 @@ function addPlayer(msg){
 
 function initGame(msg){
   client.channels.get(channelId).bulkDelete(100);
-  client.channels.get(channelId).send("nique")
+  client.channels.get(channelId).send("give me an In");
   numberOfPlayer = parseInt(msg.content.slice(-1));
 }
 
