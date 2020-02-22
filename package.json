@@ -9,7 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^11.5.1",
-    "random-word-fr": "^1.0.3"
+    "discord.js": "^11.5.1"
   }
 }

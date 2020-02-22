@@ -1,58 +1,83 @@
 const Discord = require('discord.js');
-const randomWordFR = require('random-word-fr');
 const client = new Discord.Client();
 
-client.login("NjczNDkyMzc3MTU1MTQxNjYx.XjcgFw.dPT_oi9J7PqtfBt11TIz9Z0jcfA");
+var fs = require('fs');
+var words = fs.readFileSync('words.txt').toString().split("\n");
 
-const token = '';
+
 var numberOfPlayer = 0;
-var registration = false;
 var players = [];
 var mot = '';
 
-client.on("message", function (msg) {
-	if (msg.content.match("Start[3-8]")) {
-        players=[]
-        numberOfPlayer = parseInt(msg.content.slice(-1));
-        registration = true;
-    }
-    if (msg.content.match("In")) {
-        if (numberOfPlayer === 0){
-            msg.reply("pas de game")
-        }else{
-           players.push(msg.author);
-           numberOfPlayer--;
-           msg.reply("game joined")
-           if(numberOfPlayer===0){
-                mot = randomWordFR();
-                var traitor;
-                var master;
-                do {
-                    traitor = getRandomInt(players.length);
-                    master = getRandomInt(players.length);
-                } while (master===traitor);
-                for(var i = 0; i < players.length;i++){
-                    if(i === traitor){
-                        players[i].send("traitre : "+mot);
-                        players[i].send("le MJ est : pas fini");
-                    }else if(i === master){
-                        players[i].send("MJ :"+mot);
-                    }else{
-                        players[i].send("citoyen");
-                        players[i].send("traitre : pas fini");
-                    }
-                }          
-            }
-        }  
-    }
-    if (msg.content.match("End")) {
-        for(var i = 0; i < players.length;i++){
-            players[i].send("reponse : "+mot);
-        }
+var channelId = '680494155172020271';
+client.login("NjczNDkyMzc3MTU1MTQxNjYx.XjcgFw.dPT_oi9J7PqtfBt11TIz9Z0jcfA");
 
+client.on("ready", ()=>{
+  console.log('suce');
+})
+
+client.on("message", function (msg) {
+  console.log(players)
+  if (msg.content.match("Start[3-8]")) {
+    initGame(msg);
+  }
+  if (msg.content.match("In")) {
+    if (numberOfPlayer === 0) {
+      msg.reply("pas de game")
+    } else if(players.indexOf(msg.author.username)===-1) {
+      addPlayer(msg);
+      console.log(numberOfPlayer);      
+      if (numberOfPlayer === 0) {
+        startGame();
+      }
     }
+  }
+  if (msg.content.match("End")) {
+    for(var i = 0; i < players.length;i++){
+      players[i].send("reponse : "+mot);
+    }
+  }
 });
 
+function startGame(){
+  mot = getRandomInt(words.length);
+  var traitor;
+  var master;
+  do {
+    traitor = getRandomInt(players.length);
+    master = getRandomInt(players.length);
+  } while (master === traitor);
+  client.channels.get(channelId).send("Le MJ est : "+players[master].username+" , ordre des questions->")
+  for (var i = 0; i < players.length; i++) {
+    if (i === traitor) {
+      players[i].send("Traitor : " + words[mot]);
+      client.channels.get(channelId).send(players[i].username)
+    } else if (i === master) {
+      players[i].send("Maitre : " + words[mot]);
+    } else {
+      players[i].send("Citoyen");
+      client.channels.get(channelId).send(players[i].username)
+    }
+  }
+  setTimeout(timeOut, 10000, words[mot]);
+}
+
+function addPlayer(msg){
+  client.channels.get(channelId).send(msg.author.username)
+  players.push(msg.author);
+  numberOfPlayer--;
+}
+
+function initGame(msg){
+  client.channels.get(channelId).bulkDelete(100);
+  client.channels.get(channelId).send("give me an In");
+  numberOfPlayer = parseInt(msg.content.slice(-1));
+}
+
+function timeOut(arg){
+  client.channels.get(channelId).send("TimeOut : "+arg);
+}
+
 function getRandomInt(max) {
-    return Math.floor(Math.random() * Math.floor(max));
+  return Math.floor(Math.random() * Math.floor(max));
 }
