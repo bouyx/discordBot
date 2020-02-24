@@ -10,23 +10,21 @@ var players = [];
 var mot = '';
 
 var channelId = '680494155172020271';
-client.login("NjczNDkyMzc3MTU1MTQxNjYx.XjcgFw.dPT_oi9J7PqtfBt11TIz9Z0jcfA");
+client.login("NjczNDkyMzc3MTU1MTQxNjYx.XlCFCw.mTtKNjt3NmtZ85Jk9C9DQAVkrFk");
 
 client.on("ready", ()=>{
-  console.log('suce');
+  console.log('running');
 })
 
 client.on("message", function (msg) {
-  console.log(players)
   if (msg.content.match("Start[3-8]")) {
     initGame(msg);
   }
   if (msg.content.match("In")) {
     if (numberOfPlayer === 0) {
       msg.reply("pas de game")
-    } else if(players.indexOf(msg.author.username)===-1) {
+    } else if(players.indexOf(msg.author)===-1) {
       addPlayer(msg);
-      console.log(numberOfPlayer);      
       if (numberOfPlayer === 0) {
         startGame();
       }
@@ -59,7 +57,7 @@ function startGame(){
       client.channels.get(channelId).send(players[i].username)
     }
   }
-  setTimeout(timeOut, 10000, words[mot]);
+  setTimeout(timeOut, 300000, words[mot]);
 }
 
 function addPlayer(msg){
@@ -70,7 +68,7 @@ function addPlayer(msg){
 
 function initGame(msg){
   client.channels.get(channelId).bulkDelete(100);
-  client.channels.get(channelId).send("give me an In");
+  client.channels.get(channelId).send("give me an Cookie");
   numberOfPlayer = parseInt(msg.content.slice(-1));
 }
 
